@@ -2,269 +2,119 @@
 <html lang="sv">
 <head>
 <meta charset="UTF-8">
-<title>Monster Waves</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ekenved - Fjällboende</title>
+
 <style>
 body {
     margin: 0;
-    background: radial-gradient(circle at top, #222, #000);
-    color: white;
     font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+}
+
+header {
+    background: #2c3e50;
+    color: white;
     text-align: center;
+    padding: 40px 20px;
 }
-canvas {
-    display: block;
-    margin: 20px auto;
-    background: #1a1a1a;
-    border-radius: 16px;
-    border: 3px solid #fff;
+
+nav {
+    background: #34495e;
+    text-align: center;
+    padding: 10px;
 }
-#hud {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    align-items: center;
-    font-size: 18px;
+
+nav a {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+    font-weight: bold;
 }
-#bar {
-    width: 200px;
-    height: 18px;
-    background: #444;
-    border-radius: 10px;
-    overflow: hidden;
+
+nav a:hover {
+    text-decoration: underline;
 }
-#hp {
-    height: 100%;
+
+#hero img {
     width: 100%;
-    background: linear-gradient(to right, #0f0, #0a0);
+    height: 400px;
+    object-fit: cover;
+}
+
+section {
+    padding: 40px 20px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+h2 {
+    margin-bottom: 10px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.grid img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+footer {
+    background: #2c3e50;
+    color: white;
+    text-align: center;
+    padding: 20px;
 }
 </style>
+
 </head>
 <body>
 
-<h1>Monster Waves</h1>
-<canvas id="game" width="800" height="600"></canvas>
+<header>
+    <h1>Ekenved</h1>
+    <p>Naturnära boende i Storfjäten, Idre</p>
+</header>
 
-<div id="hud">
-    <div id="wave">Wave 1</div>
-    <div id="score">Score: 0</div>
-    <div id="bar"><div id="hp"></div></div>
-</div>
+<nav>
+    <a href="#about">Om</a>
+    <a href="#gallery">Bilder</a>
+    <a href="#contact">Kontakt</a>
+</nav>
 
-<script>
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+<section id="hero">
+    <img src="images/bild1.jpg" alt="Fjällbild">
+</section>
 
-// ===== AUDIO =====
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+<section id="about">
+    <h2>Om boendet</h2>
+    <p>
+        Upplev lugnet i fjällen med närhet till natur, skidåkning och vandring.
+        Perfekt för både vinter- och sommarsemester.
+    </p>
+</section>
 
-function playSound(freq, duration, type="sine") {
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = type;
-    osc.frequency.value = freq;
-    gain.gain.value = 0.15;
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime + duration);
-}
+<section id="gallery">
+    <h2>Bilder</h2>
+    <div class="grid">
+        <img src="images/bild1.jpg" alt="">
+        <img src="images/bild2.jpg" alt="">
+        <img src="images/bild3.jpg" alt="">
+    </div>
+</section>
 
-const soundKill = () => playSound(200, 0.1, "square");
-const soundPower = () => playSound(600, 0.15, "triangle");
-const soundDeath = () => playSound(80, 0.6, "sawtooth");
+<section id="contact">
+    <h2>Kontakt</h2>
+    <p>Email: info@ekenved.se</p>
+</section>
 
-// ===== PLAYER =====
-const player = {
-    x: 400, y: 300, r: 18,
-    speed: 4,
-    hp: 100, maxHp: 100,
-    bullets: [],
-    fireRate: 500,
-    lastShot: 0
-};
+<footer>
+    <p>© 2026 Ekenved</p>
+</footer>
 
-let keys = {};
-let enemies = [];
-let powerups = [];
-let wave = 1;
-let score = 0;
-let gameOver = false;
-
-document.addEventListener("keydown", e => keys[e.key] = true);
-document.addEventListener("keyup", e => keys[e.key] = false);
-canvas.addEventListener("click", shoot);
-
-// ===== SHOOT =====
-function shoot(e) {
-    if (gameOver) return;
-    const now = Date.now();
-    if (now - player.lastShot < player.fireRate) return;
-    player.lastShot = now;
-
-    const rect = canvas.getBoundingClientRect();
-    const mx = e.clientX - rect.left;
-    const my = e.clientY - rect.top;
-    const a = Math.atan2(my - player.y, mx - player.x);
-
-    player.bullets.push({ x: player.x, y: player.y, a, s: 9 });
-}
-
-// ===== WAVES =====
-function startWave() {
-    enemies = [];
-    const count = 3 + wave * 2;     // kontrollerad ökning
-    const speed = 1.2 + wave * 0.12;
-
-    for (let i = 0; i < count; i++) {
-        spawnEnemy(speed);
-    }
-}
-
-function spawnEnemy(speed) {
-    enemies.push({
-        x: Math.random()<0.5?0:800,
-        y: Math.random()*600,
-        r: 14,
-        s: speed,
-        color: ["red","orange","purple","blue"][Math.floor(Math.random()*4)]
-    });
-}
-
-function spawnPowerup() {
-    const types = ["heal","fast","speed"];
-    powerups.push({
-        x: Math.random()*760+20,
-        y: Math.random()*560+20,
-        r: 10,
-        type: types[Math.floor(Math.random()*types.length)]
-    });
-}
-
-startWave();
-
-// ===== UPDATE =====
-function update() {
-    if (gameOver) return;
-
-    let spd = player.speed;
-    if (player.speedBoost) spd *= 1.5;
-
-    if (keys["w"]||keys["ArrowUp"]) player.y -= spd;
-    if (keys["s"]||keys["ArrowDown"]) player.y += spd;
-    if (keys["a"]||keys["ArrowLeft"]) player.x -= spd;
-    if (keys["d"]||keys["ArrowRight"]) player.x += spd;
-
-    player.x = Math.max(player.r, Math.min(800-player.r, player.x));
-    player.y = Math.max(player.r, Math.min(600-player.r, player.y));
-
-    player.bullets.forEach((b,i)=>{
-        b.x += Math.cos(b.a)*b.s;
-        b.y += Math.sin(b.a)*b.s;
-        if (b.x<0||b.y<0||b.x>800||b.y>600) player.bullets.splice(i,1);
-    });
-
-    enemies.forEach((e,ei)=>{
-        const dx = player.x-e.x;
-        const dy = player.y-e.y;
-        const d = Math.hypot(dx,dy);
-        e.x += dx/d * e.s;
-        e.y += dy/d * e.s;
-
-        player.bullets.forEach((b,bi)=>{
-            if (Math.hypot(b.x-e.x,b.y-e.y)<e.r) {
-                enemies.splice(ei,1);
-                player.bullets.splice(bi,1);
-                score += 10;
-                soundKill();
-            }
-        });
-
-        if (d < e.r+player.r) {
-            enemies.splice(ei,1);
-            player.hp -= 10;
-            if (player.hp <= 0) {
-                gameOver = true;
-                soundDeath();
-            }
-        }
-    });
-
-    powerups.forEach((p,i)=>{
-        if (Math.hypot(player.x-p.x,player.y-p.y)<player.r+p.r) {
-            soundPower();
-            if (p.type==="heal") player.hp=Math.min(player.maxHp,player.hp+30);
-            if (p.type==="fast") {
-                player.fireRate=200;
-                setTimeout(()=>player.fireRate=500,5000);
-            }
-            if (p.type==="speed") {
-                player.speedBoost=true;
-                setTimeout(()=>player.speedBoost=false,5000);
-            }
-            powerups.splice(i,1);
-        }
-    });
-
-    if (enemies.length===0) {
-        wave++;
-        if (Math.random()<0.8) spawnPowerup();
-        startWave();
-    }
-
-    document.getElementById("wave").innerText="Wave "+wave;
-    document.getElementById("score").innerText="Score: "+score;
-    document.getElementById("hp").style.width=(player.hp/player.maxHp*100)+"%";
-}
-
-// ===== DRAW =====
-function draw() {
-    ctx.clearRect(0,0,800,600);
-
-    ctx.fillStyle="green";
-    ctx.beginPath();
-    ctx.arc(player.x,player.y,player.r,0,Math.PI*2);
-    ctx.fill();
-
-    ctx.fillStyle="white";
-    ctx.beginPath();
-    ctx.arc(player.x-5,player.y-5,3,0,Math.PI*2);
-    ctx.arc(player.x+5,player.y-5,3,0,Math.PI*2);
-    ctx.fill();
-
-    ctx.fillStyle="yellow";
-    player.bullets.forEach(b=>{
-        ctx.beginPath();
-        ctx.arc(b.x,b.y,4,0,Math.PI*2);
-        ctx.fill();
-    });
-
-    enemies.forEach(e=>{
-        ctx.fillStyle=e.color;
-        ctx.beginPath();
-        ctx.arc(e.x,e.y,e.r,0,Math.PI*2);
-        ctx.fill();
-    });
-
-    powerups.forEach(p=>{
-        ctx.fillStyle=p.type==="heal"?"lime":p.type==="fast"?"cyan":"magenta";
-        ctx.beginPath();
-        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-        ctx.fill();
-    });
-
-    if (gameOver) {
-        ctx.fillStyle="red";
-        ctx.font="48px Arial";
-        ctx.fillText("GAME OVER",240,300);
-    }
-}
-
-function loop() {
-    update();
-    draw();
-    requestAnimationFrame(loop);
-}
-loop();
-</script>
 </body>
 </html>
