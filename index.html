@@ -6,53 +6,82 @@
 <title>Ekenved - Fjällboende</title>
 
 <style>
-body {
+:root {
+    --main-color: #1f2f2f;
+    --accent-color: #6b8e23;
+}
+
+* {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f4f4;
     color: #333;
 }
 
+/* HEADER */
 header {
-    background: #2c3e50;
-    color: white;
+    height: 90vh;
+    background: url("images/bild1.jpg") center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    padding: 40px 20px;
+    color: white;
 }
 
+header div {
+    background: rgba(0,0,0,0.5);
+    padding: 30px;
+    border-radius: 10px;
+}
+
+header h1 {
+    font-size: 3rem;
+}
+
+header p {
+    margin-top: 10px;
+}
+
+/* NAV */
 nav {
-    background: #34495e;
+    background: white;
+    padding: 15px;
     text-align: center;
-    padding: 10px;
+    position: sticky;
+    top: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 nav a {
-    color: white;
     margin: 0 15px;
     text-decoration: none;
+    color: var(--main-color);
     font-weight: bold;
 }
 
 nav a:hover {
-    text-decoration: underline;
+    color: var(--accent-color);
 }
 
-#hero img {
-    width: 100%;
-    height: 400px;
-    object-fit: cover;
-}
-
+/* SECTIONS */
 section {
-    padding: 40px 20px;
+    padding: 60px 20px;
     max-width: 1000px;
     margin: auto;
 }
 
 h2 {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    color: var(--main-color);
 }
 
+/* GALLERY */
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -61,11 +90,24 @@ h2 {
 
 .grid img {
     width: 100%;
+    border-radius: 12px;
+    transition: transform 0.3s;
+}
+
+.grid img:hover {
+    transform: scale(1.05);
+}
+
+/* CONTACT */
+.contact-box {
+    background: white;
+    padding: 20px;
     border-radius: 10px;
 }
 
+/* FOOTER */
 footer {
-    background: #2c3e50;
+    background: var(--main-color);
     color: white;
     text-align: center;
     padding: 20px;
@@ -76,8 +118,10 @@ footer {
 <body>
 
 <header>
-    <h1>Ekenved</h1>
-    <p>Naturnära boende i Storfjäten, Idre</p>
+    <div>
+        <h1>Ekenved</h1>
+        <p>Naturnära boende i Storfjäten, Idre</p>
+    </div>
 </header>
 
 <nav>
@@ -86,15 +130,11 @@ footer {
     <a href="#contact">Kontakt</a>
 </nav>
 
-<section id="hero">
-    <img src="images/bild1.jpg" alt="Fjällbild">
-</section>
-
 <section id="about">
     <h2>Om boendet</h2>
     <p>
-        Upplev lugnet i fjällen med närhet till natur, skidåkning och vandring.
-        Perfekt för både vinter- och sommarsemester.
+        Välkommen till Ekenved – en plats för lugn, natur och återhämtning.
+        Här bor du nära fjällen med tillgång till skidåkning, vandring och fantastisk natur året runt.
     </p>
 </section>
 
@@ -109,7 +149,10 @@ footer {
 
 <section id="contact">
     <h2>Kontakt</h2>
-    <p>Email: info@ekenved.se</p>
+    <div class="contact-box">
+        <p>Email: info@ekenved.se</p>
+        <p>Telefon: 070-123 45 67</p>
+    </div>
 </section>
 
 <footer>
