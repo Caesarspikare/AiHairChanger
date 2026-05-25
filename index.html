@@ -3,173 +3,117 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CV AI - Din Personliga CV-fixare</title>
+  <title>CV AI - Skapa ditt CV</title>
   <style>
-    :root {
-      --bg: #0a0a0a;
-      --accent: #00ff9d;
-      --card: #111118;
-    }
+    :root { --accent: #00ff9d; --bg: #0a0a0a; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       background: var(--bg);
-      color: #e0e0e0;
-      line-height: 1.6;
+      color: #ddd;
+      display: flex;
+      min-height: 100vh;
     }
-    header {
-      text-align: center;
-      padding: 120px 20px 80px;
-      background: linear-gradient(135deg, #1a0033, #0a0a0a);
+    .form {
+      width: 420px;
+      background: #111118;
+      padding: 30px;
+      overflow-y: auto;
+      border-right: 1px solid #222;
     }
-    h1 {
-      font-size: 3.8rem;
-      background: linear-gradient(90deg, #00ff9d, #00ccff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .subtitle {
-      font-size: 1.5rem;
-      margin-top: 15px;
-      opacity: 0.9;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-    section {
-      padding: 80px 0;
-    }
-    h2 {
-      color: var(--accent);
-      font-size: 2.2rem;
-      margin-bottom: 30px;
-      text-align: center;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 30px;
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid rgba(0, 255, 157, 0.2);
-      border-radius: 16px;
-      padding: 35px;
-      transition: 0.3s;
-    }
-    .card:hover {
-      transform: translateY(-10px);
-      border-color: var(--accent);
-    }
-    .example-cv {
-      background: white;
-      color: #111;
+    .preview {
+      flex: 1;
       padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      margin: 30px 0;
+      background: #f4f4f4;
+      color: #111;
+      overflow-y: auto;
     }
-    footer {
-      text-align: center;
-      padding: 60px 20px;
-      opacity: 0.8;
+    h1 { color: var(--accent); }
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      background: #1f1f2e;
+      border: 1px solid #444;
+      border-radius: 8px;
+      color: white;
     }
+    button {
+      background: var(--accent);
+      color: black;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      width: 100%;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+    .cv {
+      max-width: 750px;
+      margin: 0 auto;
+      background: white;
+      padding: 50px 60px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    .cv h1 { text-align: center; font-size: 2.6rem; }
+    .cv h2 { border-bottom: 3px solid var(--accent); padding-bottom: 8px; margin: 25px 0 12px; }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="container">
-      <h1>CV AI</h1>
-      <p class="subtitle">En AI som fixar och förbättrar ditt CV på sekunder</p>
-    </div>
-  </header>
+  <div class="form">
+    <h1>CV AI</h1>
+    <p>Fyll i dina uppgifter nedan</p>
 
-  <div class="container">
+    <input type="text" id="namn" placeholder="Fullständigt namn" onkeyup="updateCV()">
+    <input type="text" id="titel" placeholder="Titel (t.ex. Webbutvecklare)" onkeyup="updateCV()">
+    <input type="text" id="email" placeholder="E-post" onkeyup="updateCV()">
+    <input type="text" id="telefon" placeholder="Telefon" onkeyup="updateCV()">
+    <input type="text" id="ort" placeholder="Ort" onkeyup="updateCV()">
 
-    <section>
-      <h2>Om CV AI</h2>
-      <div class="grid">
-        <div class="card">
-          <h3>Vem har skapat det?</h3>
-          <p>CV AI är ett konceptuellt AI-verktyg utvecklat med hjälp av stora språkmodeller som ChatGPT, Claude och Grok.</p>
-        </div>
-        <div class="card">
-          <h3>Syfte</h3>
-          <p>Hjälpa jobbseekers att skapa professionella, moderna och anpassade CV:n snabbt och effektivt.</p>
-        </div>
-        <div class="card">
-          <h3>Målgrupp</h3>
-          <p>Studenter, nyexaminerade, personer som vill byta jobb och alla som vill förbättra sitt CV.</p>
-        </div>
-      </div>
-    </section>
+    <textarea id="utbildning" rows="5" placeholder="Utbildning..." onkeyup="updateCV()"></textarea>
+    <textarea id="erfarenhet" rows="6" placeholder="Arbetslivserfarenhet..." onkeyup="updateCV()"></textarea>
+    <textarea id="fardigheter" rows="3" placeholder="Färdigheter (separera med komma)" onkeyup="updateCV()"></textarea>
 
-    <section>
-      <h2>Hur fungerar det?</h2>
-      <p style="text-align:center; font-size:1.2rem; max-width:800px; margin:0 auto 40px;">
-        Du skriver in dina uppgifter → AI:n analyserar dem → genererar ett snyggt, professionellt CV anpassat efter den bransch du söker jobb inom.
-      </p>
-    </section>
-
-    <section>
-      <h2>Exempel på genererat CV</h2>
-      <div class="example-cv">
-        <h1 style="text-align:center; font-size:2.8rem; margin-bottom:8px;">Anna Lindberg</h1>
-        <p style="text-align:center; color:#555; font-size:1.3rem;">Junior Webbutvecklare & Designer</p>
-        
-        <h2 style="border-bottom:2px solid #00ff9d; padding-bottom:8px; margin:30px 0 15px;">Utbildning</h2>
-        <p><strong>Kandidatprogram i Digital Design</strong><br>
-        Malmö Universitet • 2022 – 2025</p>
-
-        <h2 style="border-bottom:2px solid #00ff9d; padding-bottom:8px; margin:30px 0 15px;">Arbetslivserfarenhet</h2>
-        <p><strong>Webbpraktikant</strong> — Digitalbyrå AB<br>
-        Juni 2024 – Jan 2025<br>
-        • Utveckling av responsiva webbplatser<br>
-        • Design och optimering av användargränssnitt</p>
-
-        <h2 style="border-bottom:2px solid #00ff9d; padding-bottom:8px; margin:30px 0 15px;">Färdigheter</h2>
-        <p>HTML5 • CSS3 • JavaScript • Figma • React • UX/UI • Git</p>
-      </div>
-    </section>
-
-    <section>
-      <h2>Styrkor & Begränsningar</h2>
-      <div class="grid">
-        <div class="card">
-          <h3>Styrkor</h3>
-          <ul>
-            <li>Snabbt och enkelt</li>
-            <li>Anpassar CV efter jobbannons</li>
-            <li>Modern och professionell design</li>
-            <li>Hjälper till med formuleringar</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Begränsningar</h3>
-          <ul>
-            <li>Kräver att du matar in korrekt information</li>
-            <li>Gratisversioner har begränsat antal CV per månad</li>
-            <li>Kan inte ersätta personlig touch helt</li>
-            <li>Vissa AI-verktyg kostar pengar för bättre resultat</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <h2>Min Analys</h2>
-      <p>Jag testade att använda Claude och ChatGPT för att generera CV. Resultatet blev bra men behövde ofta finjusteringar. Ett dedikerat CV AI-verktyg skulle spara mycket tid och ge mer konsekventa resultat. Detta är ett mycket användbart verktyg för studenter och jobbseekers.</p>
-    </section>
-
+    <button onclick="window.print()">Ladda ner / Skriv ut CV</button>
   </div>
 
-  <footer>
-    <p>Inlämning - Artificiell Intelligens 1 • 26 maj 2026</p>
-    <p>Ditt Namn • Inspirerad av TAAFT</p>
-  </footer>
+  <div class="preview">
+    <div id="cv" class="cv">
+      <h1>Ditt Namn</h1>
+      <p style="text-align:center; font-size:1.3rem;">Din titel här</p>
+      <p style="text-align:center;">e-post • telefon • ort</p>
+      
+      <h2>Utbildning</h2>
+      <p>Fyll i vänster sida...</p>
+      
+      <h2>Arbetslivserfarenhet</h2>
+      <p>Fyll i vänster sida...</p>
+      
+      <h2>Färdigheter</h2>
+      <p>Fyll i vänster sida...</p>
+    </div>
+  </div>
 
+  <script>
+    function updateCV() {
+      document.querySelector("#cv h1").textContent = document.getElementById("namn").value || "Ditt Namn";
+      document.querySelector("#cv p").textContent = document.getElementById("titel").value || "Din titel";
+      
+      const kontakt = `${document.getElementById("email").value || ""} • ${document.getElementById("telefon").value || ""} • ${document.getElementById("ort").value || ""}`;
+      document.querySelectorAll("#cv p")[1].textContent = kontakt;
+
+      // Utbildning
+      const utbildningText = document.getElementById("utbildning").value.replace(/\n/g, "<br>");
+      const expText = document.getElementById("erfarenhet").value.replace(/\n/g, "<br>");
+      const skillsText = document.getElementById("fardigheter").value;
+
+      const sections = document.querySelectorAll("#cv h2");
+      if (sections[0]) sections[0].nextElementSibling.innerHTML = utbildningText || "Fyll i utbildning...";
+      if (sections[1]) sections[1].nextElementSibling.innerHTML = expText || "Fyll i erfarenhet...";
+      if (sections[2]) sections[2].nextElementSibling.innerHTML = skillsText || "Fyll i färdigheter...";
+    }
+  </script>
 </body>
 </html>
